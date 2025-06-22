@@ -96,6 +96,45 @@ Make sure it is clean.
 Run `./gradlew clean build` to clean the build folder and perform all the test, coverage,
 PMD, checkstyle and generate a jar file ready to deploy.
 
+<pre>
+8:42:46 am: Executing 'build'…
+
+> Task :prepareGitHooks NO-SOURCE
+> Task :generateEffectiveLombokConfig UP-TO-DATE
+> Task :compileJava UP-TO-DATE
+> Task :processResources UP-TO-DATE
+> Task :classes UP-TO-DATE
+> Task :resolveMainClassName UP-TO-DATE
+> Task :bootJar UP-TO-DATE
+> Task :jar UP-TO-DATE
+> Task :assemble UP-TO-DATE
+> Task :checkstyleMain UP-TO-DATE
+> Task :generateTestEffectiveLombokConfig UP-TO-DATE
+> Task :compileTestJava
+> Task :processTestResources UP-TO-DATE
+> Task :testClasses
+> Task :pmdMain UP-TO-DATE
+> Task :checkstyleTest
+> Task :pmdTest
+> Task :spotbugsMain UP-TO-DATE
+> Task :test UP-TO-DATE
+> Task :jacocoTestReport UP-TO-DATE
+> Task :spotbugsTest
+> Task :check
+> Task :build
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 8.0.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+See https://docs.gradle.org/7.6/userguide/command_line_interface.html#sec:command_line_warnings
+
+BUILD SUCCESSFUL in 3s
+17 actionable tasks: 4 executed, 13 up-to-date
+8:42:50 am: Execution finished 'build'.
+
+</pre>
+
 ### Run the application & test
 
 Run `./gradlew bootRun` to start the application.

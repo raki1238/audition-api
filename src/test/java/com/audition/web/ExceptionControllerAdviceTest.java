@@ -19,12 +19,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.core.MethodParameter;
 
 @SuppressWarnings("PMD.AvoidAccessibilityAlteration")
 class ExceptionControllerAdviceTest {
 
     private transient ExceptionControllerAdvice advice;
-    private transient final AuditionLogger logger = new AuditionLogger();
+    private final transient AuditionLogger logger = new AuditionLogger();
     private static final String PMD_AVOID_ACCESSIBILITY = "PMD.AvoidAccessibilityAlteration";
 
     @SuppressWarnings(PMD_AVOID_ACCESSIBILITY)
@@ -89,8 +90,9 @@ class ExceptionControllerAdviceTest {
 
     @Test
     void testHandleTypeMismatch() {
+        final MethodParameter methodParameter = mock(MethodParameter.class);
         final MethodArgumentTypeMismatchException ex = new MethodArgumentTypeMismatchException(
-            "value", String.class, "param", null, new IllegalArgumentException("bad type"));
+            "value", String.class, "param", methodParameter, new IllegalArgumentException("bad type"));
         final ProblemDetail detail = advice.handleTypeMismatch(ex);
         assertEquals(400, detail.getStatus());
         assertEquals("Invalid Parameter", detail.getTitle());

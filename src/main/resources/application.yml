@@ -28,7 +28,7 @@ audition:
   api:
     base-url: https://jsonplaceholder.typicode.com
     posts:
-      paths: /posts
+      path: /posts
     comments:
       path: /comments
 

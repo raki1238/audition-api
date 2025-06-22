@@ -15,11 +15,11 @@ import java.lang.reflect.Method;
 import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
-import org.springframework.core.MethodParameter;
 
 @SuppressWarnings("PMD.AvoidAccessibilityAlteration")
 class ExceptionControllerAdviceTest {
@@ -31,7 +31,7 @@ class ExceptionControllerAdviceTest {
     @SuppressWarnings(PMD_AVOID_ACCESSIBILITY)
     @BeforeEach
     void setUp() throws Exception {
-        advice = new ExceptionControllerAdvice();
+        advice = new ExceptionControllerAdvice(new AuditionLogger());
         final Field loggerField = ExceptionControllerAdvice.class.getDeclaredField("logger");
         loggerField.setAccessible(true);
         loggerField.set(advice, logger);

@@ -1,0 +1,57 @@
+# Docker-specific configuration
+spring:
+  application:
+    name: audition-api
+  main:
+    allow-bean-definition-overriding: true
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
+
+server:
+  port: 8080
+  max-http-request-header-size: 16KB
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: 'info,health,metrics,prometheus'
+      base-path: /actuator
+  endpoint:
+    health:
+      show-details: when-authorized
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+
+logging:
+  pattern:
+    level: "%5p [${spring.application.name:},%X{traceId:-},%X{spanId:-}]"
+  level:
+    com.audition: INFO
+    org.springframework.web: INFO
+    org.springframework.boot: INFO
+
+# External API configuration (can be overridden via environment variables)
+audition:
+  api:
+    base-url: ${AUDITION_API_BASE_URL:https://jsonplaceholder.typicode.com}
+    posts:
+      path: ${AUDITION_API_POSTS_PATH:/posts}
+    comments:
+      path: ${AUDITION_API_COMMENTS_PATH:/comments}
+
+# SpringDoc OpenAPI Configuration
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    operations-sorter: method
+    tags-sorter: alpha
+    doc-expansion: none
+    disable-swagger-default-url: true
+  default-produces-media-type: application/json
+  default-consumes-media-type: application/json 

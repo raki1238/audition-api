@@ -1,0 +1,87 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.0.3'
+    id 'io.spring.dependency-management' version '1.1.0'
+    id "maven-publish"
+    id 'jacoco'
+    id "com.github.spotbugs" version "5.0.14"
+    id "io.freefair.lombok" version "8.0.1"
+    id "checkstyle"
+    id "pmd"
+}
+
+group = 'com.audition'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '17'
+targetCompatibility = '17'
+
+
+// TODO allow for code-analysis.gradle to be applied for code analysis.
+apply from: 'config/code-analysis.gradle'
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+ext {
+    set('springCloudVersion', "2022.0.1")
+    set('logbackVersion', "1.4.5")
+    set('slf4jVersion', "2.0.5")
+    set('springdocVersion', "2.0.2")
+}
+
+dependencies {
+
+    implementation "org.springframework.boot:spring-boot-starter-actuator"
+    //Removed "org.springframework.boot:spring-boot-starter-data-jpa" as we are not using any database in this app.
+    implementation "org.springframework.boot:spring-boot-starter-web"
+    //Removed "org.springframework.cloud:spring-cloud-starter-config" as we are not using any cloud config like pulling
+    //              application.yml from cloud repository. Its currently with in the application.
+    //Removed "org.springframework.boot:spring-boot-starter-webflux" as we are using RestTemplate
+    implementation "org.springframework.boot:spring-boot-starter-aop"
+    implementation "org.springframework.boot:spring-boot-starter-validation"
+    implementation "io.micrometer:micrometer-tracing-bridge-brave"
+    implementation "io.micrometer:micrometer-tracing"
+    implementation "io.micrometer:micrometer-registry-prometheus"
+    implementation "io.micrometer:context-propagation"
+    // Removed spring-cloud-starter-circuitbreaker-reactor-resilience4j as it's not used
+    // Removed as its repeated and not used : "org.springframework.cloud:spring-cloud-starter-config"
+    implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:${springdocVersion}"
+
+    developmentOnly "org.springframework.boot:spring-boot-devtools"
+    // Removed as it is already in implementation -> runtimeOnly "io.micrometer:micrometer-registry-prometheus"
+
+
+    implementation "org.slf4j:slf4j-api:${slf4jVersion}"
+    implementation "ch.qos.logback:logback-core:${logbackVersion}"
+    implementation "ch.qos.logback:logback-classic:${logbackVersion}"
+
+    testImplementation "org.springframework.boot:spring-boot-starter-test"
+    testImplementation "io.projectreactor:reactor-test"
+    testImplementation "io.zipkin.brave:brave:5.16.0"
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+    }
+}
+
+
+task prepareGitHooks(type: Copy) {
+    from "$projectDir/git-hooks"
+    into "$projectDir/.git/hooks"
+    include "*"
+}
+tasks.matching { it.name != 'prepareGitHooks' }.all { Task task -> task.dependsOn prepareGitHooks }
+
+
+tasks.named('test') {
+    useJUnitPlatform()
+}

@@ -11,6 +11,12 @@ import java.util.Set;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+/*
+ * This test class is used to test the AuditionApiProperties
+ * If mandatory values are not provided we need to fail
+ * So checking success and failure scenarios
+ */
+
 class AuditionApiPropertiesTest {
 
     private static Validator validator;
@@ -25,6 +31,7 @@ class AuditionApiPropertiesTest {
         }
     }
 
+    // Testing success scenario
     @Test
     void testValidProperties() {
         final AuditionApiProperties.Posts posts = new AuditionApiProperties.Posts(POSTS_PATH);
@@ -34,6 +41,7 @@ class AuditionApiPropertiesTest {
         assertTrue(violations.isEmpty());
     }
 
+    // Test all the negative scenarios or missing properties.
     @Test
     void testMissingBaseUrl() {
         final AuditionApiProperties.Posts posts = new AuditionApiProperties.Posts(POSTS_PATH);
@@ -41,7 +49,8 @@ class AuditionApiPropertiesTest {
         final AuditionApiProperties props = new AuditionApiProperties(null, posts, comments);
         final Set<ConstraintViolation<AuditionApiProperties>> violations = validator.validate(props);
         assertFalse(violations.isEmpty());
-        assertTrue(violations.stream().anyMatch(v -> "baseUrl".equals(v.getPropertyPath().toString())));
+        assertTrue(violations.stream().anyMatch(
+            v -> "baseUrl".equals(v.getPropertyPath().toString())));
     }
 
     @Test
@@ -50,7 +59,8 @@ class AuditionApiPropertiesTest {
         final AuditionApiProperties props = new AuditionApiProperties(BASE_URL, null, comments);
         final Set<ConstraintViolation<AuditionApiProperties>> violations = validator.validate(props);
         assertFalse(violations.isEmpty());
-        assertTrue(violations.stream().anyMatch(v -> "posts".equals(v.getPropertyPath().toString())));
+        assertTrue(violations.stream().anyMatch(
+            v -> "posts".equals(v.getPropertyPath().toString())));
     }
 
     @Test
@@ -59,7 +69,8 @@ class AuditionApiPropertiesTest {
         final AuditionApiProperties props = new AuditionApiProperties(BASE_URL, posts, null);
         final Set<ConstraintViolation<AuditionApiProperties>> violations = validator.validate(props);
         assertFalse(violations.isEmpty());
-        assertTrue(violations.stream().anyMatch(v -> "comments".equals(v.getPropertyPath().toString())));
+        assertTrue(violations.stream().anyMatch(
+            v -> "comments".equals(v.getPropertyPath().toString())));
     }
 
     @Test
@@ -69,7 +80,8 @@ class AuditionApiPropertiesTest {
         final AuditionApiProperties props = new AuditionApiProperties(BASE_URL, posts, comments);
         final Set<ConstraintViolation<AuditionApiProperties>> violations = validator.validate(props);
         assertFalse(violations.isEmpty());
-        assertTrue(violations.stream().anyMatch(v -> v.getPropertyPath().toString().contains("posts.path")));
+        assertTrue(violations.stream().anyMatch(
+            v -> v.getPropertyPath().toString().contains("posts.path")));
     }
 
     @Test
@@ -79,6 +91,7 @@ class AuditionApiPropertiesTest {
         final AuditionApiProperties props = new AuditionApiProperties(BASE_URL, posts, comments);
         final Set<ConstraintViolation<AuditionApiProperties>> violations = validator.validate(props);
         assertFalse(violations.isEmpty());
-        assertTrue(violations.stream().anyMatch(v -> v.getPropertyPath().toString().contains("comments.path")));
+        assertTrue(violations.stream().anyMatch(
+            v -> v.getPropertyPath().toString().contains("comments.path")));
     }
 } 

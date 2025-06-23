@@ -6,8 +6,10 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.audition.common.logging.AuditionLogger;
-import com.audition.interceptor.ResponseHeaderInjector;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import java.text.SimpleDateFormat;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -23,8 +25,7 @@ class WebServiceConfigurationTest {
     @BeforeEach
     void setUp() {
         auditionLogger = new AuditionLogger();
-        final ResponseHeaderInjector responseHeaderInjector = new ResponseHeaderInjector(null);
-        config = new WebServiceConfiguration(responseHeaderInjector, auditionLogger);
+        config = new WebServiceConfiguration(auditionLogger);
     }
 
     @Test
@@ -32,9 +33,14 @@ class WebServiceConfigurationTest {
         final ObjectMapper mapper = config.objectMapper();
         assertNotNull(mapper);
         assertEquals("yyyy-MM-dd", ((SimpleDateFormat) mapper.getDateFormat()).toPattern());
-        assertFalse(mapper.getSerializationConfig().isEnabled(com.fasterxml.jackson.databind.SerializationFeature.WRITE_DATES_AS_TIMESTAMPS));
-        assertEquals(com.fasterxml.jackson.databind.PropertyNamingStrategies.LOWER_CAMEL_CASE, mapper.getPropertyNamingStrategy());
-        assertEquals(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_EMPTY, mapper.getSerializationConfig().getSerializationInclusion());
+        assertFalse(mapper.getSerializationConfig()
+            .isEnabled(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS));
+        assertEquals(PropertyNamingStrategies.LOWER_CAMEL_CASE,
+            mapper.getPropertyNamingStrategy());
+        assertEquals(JsonInclude.Include.NON_EMPTY,
+            mapper.getSerializationConfig()
+                .getDefaultPropertyInclusion()
+                .getValueInclusion());
     }
 
     @Test
@@ -49,7 +55,8 @@ class WebServiceConfigurationTest {
         final RestTemplate restTemplate = config.restTemplate();
         assertNotNull(restTemplate);
         assertFalse(restTemplate.getInterceptors().isEmpty());
-        assertTrue(restTemplate.getMessageConverters().stream().anyMatch(c -> c instanceof MappingJackson2HttpMessageConverter));
+        assertTrue(restTemplate.getMessageConverters().stream()
+            .anyMatch(c -> c instanceof MappingJackson2HttpMessageConverter));
     }
 
     @Test

@@ -1,7 +1,6 @@
 package com.audition.configuration;
 
 import com.audition.common.logging.AuditionLogger;
-import com.audition.interceptor.ResponseHeaderInjector;
 import com.audition.interceptor.RestClientLogInterceptor;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -22,7 +21,6 @@ import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 
@@ -32,7 +30,6 @@ public class WebServiceConfiguration implements WebMvcConfigurer {
 
     private static final String YEAR_MONTH_DAY_PATTERN = "yyyy-MM-dd";
 
-    final ResponseHeaderInjector responseHeaderInjector;
     final AuditionLogger auditionLogger;
 
     @Bean
@@ -79,11 +76,6 @@ public class WebServiceConfiguration implements WebMvcConfigurer {
         restTemplate.setInterceptors(interceptors);
 
         return restTemplate;
-    }
-
-    @Override
-    public void addInterceptors(final InterceptorRegistry registry) {
-        registry.addInterceptor(responseHeaderInjector);
     }
 
     @Bean

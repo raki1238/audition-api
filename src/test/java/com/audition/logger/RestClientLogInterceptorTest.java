@@ -23,6 +23,10 @@ import org.springframework.http.HttpRequest;
 import org.springframework.http.client.ClientHttpRequestExecution;
 import org.springframework.http.client.ClientHttpResponse;
 
+/*
+Test class for RestClient logger interceptor
+ */
+
 @SuppressWarnings({"PMD.CloseResource", "PMD.LinguisticNaming"})
 class RestClientLogInterceptorTest {
 

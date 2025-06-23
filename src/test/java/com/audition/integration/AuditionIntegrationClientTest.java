@@ -21,6 +21,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
+/*
+ * Class to Test the integration with the external/third-party API.
+ * This can be also used to test when there are any changes with the API.
+ */
+
 class AuditionIntegrationClientTest {
 
     private transient RestTemplate restTemplate;
@@ -31,7 +36,8 @@ class AuditionIntegrationClientTest {
         restTemplate = mock(RestTemplate.class);
         final AuditionApiProperties.Posts postsConfig = new AuditionApiProperties.Posts("/posts");
         final AuditionApiProperties.Comments commentsConfig = new AuditionApiProperties.Comments("/comments");
-        final AuditionApiProperties apiProperties = new AuditionApiProperties("http://base", postsConfig, commentsConfig);
+        final AuditionApiProperties apiProperties = new AuditionApiProperties("http://base", postsConfig,
+            commentsConfig);
         client = new AuditionIntegrationClient(restTemplate, apiProperties);
     }
 

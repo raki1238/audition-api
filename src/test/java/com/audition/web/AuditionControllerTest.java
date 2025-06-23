@@ -1,6 +1,8 @@
 package com.audition.web;
 
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -21,6 +23,10 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.web.client.RestTemplate;
+
+/*
+ * Testing AuditionController class with all the endpoints
+ */
 
 @SuppressWarnings({"PMD.UnusedPrivateField"})
 @WebMvcTest(AuditionController.class)
@@ -72,7 +78,7 @@ class AuditionControllerTest {
     @Test
     void shouldGetPostsWithFilter() {
         when(auditionService.getPostsWithFilter("test", 1, 10)).thenReturn(testPosts);
-        final MvcResult result = org.junit.jupiter.api.Assertions.assertDoesNotThrow(() ->
+        final MvcResult result = assertDoesNotThrow(() ->
             mockMvc.perform(MockMvcRequestBuilders.get("/posts")
                     .param("filter", "test")
                     .param("page", "1")
@@ -81,48 +87,48 @@ class AuditionControllerTest {
                 .andReturn()
         );
         verify(auditionService, times(1)).getPostsWithFilter("test", 1, 10);
-        org.junit.jupiter.api.Assertions.assertEquals(200, result.getResponse().getStatus());
-        org.junit.jupiter.api.Assertions.assertEquals(2, testPosts.size());
+        assertEquals(200, result.getResponse().getStatus());
+        assertEquals(2, testPosts.size());
     }
 
     @Test
     void shouldGetPostById() {
         when(auditionService.getPostById(1L)).thenReturn(testPost);
-        final MvcResult result = org.junit.jupiter.api.Assertions.assertDoesNotThrow(() ->
+        final MvcResult result = assertDoesNotThrow(() ->
             mockMvc.perform(MockMvcRequestBuilders.get("/posts/{postId}", 1)
                     .accept(MediaType.APPLICATION_JSON))
                 .andReturn()
         );
         verify(auditionService, times(1)).getPostById(1L);
-        org.junit.jupiter.api.Assertions.assertEquals(200, result.getResponse().getStatus());
-        org.junit.jupiter.api.Assertions.assertEquals(1, testPost.getId());
+        assertEquals(200, result.getResponse().getStatus());
+        assertEquals(1, testPost.getId());
     }
 
     @Test
     void shouldGetPostWithComments() {
         when(auditionService.getPostWithComments(1L)).thenReturn(testPost);
-        final MvcResult result = org.junit.jupiter.api.Assertions.assertDoesNotThrow(() ->
+        final MvcResult result = assertDoesNotThrow(() ->
             mockMvc.perform(MockMvcRequestBuilders.get("/posts/{postId}/comments", 1)
                     .accept(MediaType.APPLICATION_JSON))
                 .andReturn()
         );
         verify(auditionService, times(1)).getPostWithComments(1L);
-        org.junit.jupiter.api.Assertions.assertEquals(200, result.getResponse().getStatus());
-        org.junit.jupiter.api.Assertions.assertEquals(1, testPost.getId());
+        assertEquals(200, result.getResponse().getStatus());
+        assertEquals(1, testPost.getId());
     }
 
     @Test
     void shouldGetCommentsForPost() {
         when(auditionService.getCommentsByPostId(1L)).thenReturn(testComments);
-        final MvcResult result = org.junit.jupiter.api.Assertions.assertDoesNotThrow(() ->
+        final MvcResult result = assertDoesNotThrow(() ->
             mockMvc.perform(MockMvcRequestBuilders.get("/comments")
                     .param("postId", "1")
                     .accept(MediaType.APPLICATION_JSON))
                 .andReturn()
         );
         verify(auditionService, times(1)).getCommentsByPostId(1L);
-        org.junit.jupiter.api.Assertions.assertEquals(200, result.getResponse().getStatus());
-        org.junit.jupiter.api.Assertions.assertEquals(1, testComments.size());
+        assertEquals(200, result.getResponse().getStatus());
+        assertEquals(1, testComments.size());
     }
 
     @org.springframework.boot.test.context.TestConfiguration

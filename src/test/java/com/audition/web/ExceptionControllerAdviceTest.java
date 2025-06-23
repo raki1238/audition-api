@@ -21,6 +21,10 @@ import org.springframework.http.ProblemDetail;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
+/*
+ * Testing the validation and exceptions when calling the API endpoints.
+ */
+
 @SuppressWarnings("PMD.AvoidAccessibilityAlteration")
 class ExceptionControllerAdviceTest {
 

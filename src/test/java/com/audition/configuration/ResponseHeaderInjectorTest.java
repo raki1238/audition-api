@@ -1,59 +1,64 @@
 package com.audition.configuration;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-import brave.Tracer;
-import brave.Tracing;
 import com.audition.interceptor.ResponseHeaderInjector;
+import io.micrometer.tracing.Span;
+import io.micrometer.tracing.TraceContext;
+import io.micrometer.tracing.Tracer;
+import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.TestConfiguration;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Primary;
-import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
-@SpringJUnitConfig(classes = ResponseHeaderInjectorTest.SleuthConfig.class)
+/*
+ * Test class to check if the Response Headers have the traceId and SpanId or not
+ */
+
 class ResponseHeaderInjectorTest {
 
     private transient Tracer tracer;
     private transient ResponseHeaderInjector injector;
     private transient HttpServletRequest request;
     private transient HttpServletResponse response;
-
-    @TestConfiguration
-    public static class SleuthConfig {
-
-        @Bean
-        @Primary
-        public Tracer tracer() {
-            return Tracing.newBuilder().build().tracer();
-        }
-    }
+    private transient FilterChain filterChain;
+    private transient Span span;
+    private transient TraceContext traceContext;
 
     @BeforeEach
     void setUp() {
-        tracer = Tracing.newBuilder().build().tracer();
+        tracer = mock(Tracer.class);
         injector = new ResponseHeaderInjector(tracer);
         request = mock(HttpServletRequest.class);
         response = mock(HttpServletResponse.class);
+        filterChain = mock(FilterChain.class);
+        span = mock(Span.class);
+        traceContext = mock(TraceContext.class);
     }
 
     @Test
-    void testPreHandleWithSpan() throws Exception {
-        tracer.nextSpan().start();
-        final boolean result = injector.preHandle(request, response, new Object());
-        // You can only verify that headers are set if a span is present
-        // (You may need to use a real HttpServletResponse for full integration)
-        assertTrue(result);
+    void testDoFilterWithSpan() throws Exception {
+        when(tracer.currentSpan()).thenReturn(span);
+        when(span.context()).thenReturn(traceContext);
+        when(traceContext.traceId()).thenReturn("trace-111");
+        when(traceContext.spanId()).thenReturn("span-111");
+
+        injector.doFilter(request, response, filterChain);
+
+        verify(response).setHeader("X-Trace-Id", "trace-111");
+        verify(response).setHeader("X-Span-Id", "span-111");
+        verify(filterChain).doFilter(request, response);
     }
 
     @Test
-    void testPreHandleWithoutSpan() throws Exception {
-        final boolean result = injector.preHandle(request, response, new Object());
-        // No span, so no headers set
-        assertTrue(result);
+    void testDoFilterWithoutSpan() throws Exception {
+        when(tracer.currentSpan()).thenReturn(null);
+
+        injector.doFilter(request, response, filterChain);
+
+        verify(filterChain).doFilter(request, response);
     }
-} 
+}

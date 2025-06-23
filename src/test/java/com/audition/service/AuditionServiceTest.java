@@ -18,6 +18,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+/*
+ * Test class for all business logics in AuditionService
+ */
+
 @SuppressWarnings("PMD.TooManyMethods")
 class AuditionServiceTest {
 

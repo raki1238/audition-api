@@ -1,29 +1,35 @@
 package com.audition.interceptor;
 
-import brave.Span;
-import brave.Tracer;
+
+import io.micrometer.tracing.Span;
+import io.micrometer.tracing.TraceContext;
+import io.micrometer.tracing.Tracer;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import org.springframework.web.servlet.HandlerInterceptor;
+import org.springframework.web.filter.OncePerRequestFilter;
 
 @Component
 @RequiredArgsConstructor
-public class ResponseHeaderInjector implements HandlerInterceptor {
+public class ResponseHeaderInjector extends OncePerRequestFilter {
 
     final Tracer tracer;
 
     @Override
-    public boolean preHandle(final HttpServletRequest request, final HttpServletResponse response, final Object handler)
-        throws Exception {
-        //Added the Response headers with the Trace-Id and Span-Id
-        if (tracer != null && tracer.currentSpan() != null) {
-            final Span currentSpan = tracer.currentSpan();
-            final Span span = currentSpan == null ? tracer.nextSpan() : currentSpan;
-            response.setHeader("X-Trace-Id", span.context().traceIdString());
-            response.setHeader("X-Span-Id", span.context().spanIdString());
+    protected void doFilterInternal(final HttpServletRequest request,
+        final HttpServletResponse response,
+        final FilterChain filterChain) throws ServletException, IOException {
+        final Span currentSpan = tracer.currentSpan();
+        if (currentSpan != null) {
+            final TraceContext spanContext = currentSpan.context();
+            response.setHeader("X-Trace-Id", spanContext.traceId());
+            response.setHeader("X-Span-Id", spanContext.spanId());
         }
-        return true;
+        filterChain.doFilter(request, response);
     }
+
 }

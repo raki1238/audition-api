@@ -9,6 +9,9 @@ import com.audition.model.AuditionComment;
 import com.audition.model.AuditionPost;
 import org.junit.jupiter.api.Test;
 
+/*
+ * Test Class to cover the testing of the Model and Exceptions
+ */
 class ModelAndExceptionCoverageTest {
 
     private static final String TITLE = "title";
@@ -63,6 +66,8 @@ class ModelAndExceptionCoverageTest {
         assertEquals(MSG, e4.getMessage());
     }
 
+    // Divided the methods as PMD was not allowing more than 7 asserts for a test.
+    //Part1
     @Test
     void testSystemExceptionDetailTitleStatusConstructorsPart1() {
         final SystemException e5 = new SystemException(DETAIL, TITLE, 400);
@@ -75,6 +80,7 @@ class ModelAndExceptionCoverageTest {
         assertEquals(500, e6.getStatusCode());
     }
 
+    //Part 2
     @Test
     void testSystemExceptionDetailTitleStatusConstructorsPart2() {
         final SystemException e7 = new SystemException(DETAIL, 400, new RuntimeException(CAUSE));
@@ -109,8 +115,8 @@ class ModelAndExceptionCoverageTest {
         // equals
         assertEquals(post1, post2);
         assertNotEquals(post1, post3);
-        assertNotEquals(post1, null);
-        assertNotEquals(post1, new Object());
+        assertNotEquals(null, post1);
+        assertNotEquals(new Object(), post1);
         assertEquals(post1, post1);
         // hashCode
         assertEquals(post1.hashCode(), post2.hashCode());
@@ -143,12 +149,12 @@ class ModelAndExceptionCoverageTest {
         // equals
         assertEquals(comment1, comment2);
         assertNotEquals(comment1, comment3);
-        assertNotEquals(comment1, null);
-        assertNotEquals(comment1, new Object());
+        assertNotEquals(null, comment1);
+        assertNotEquals(new Object(), comment1);
         assertEquals(comment1, comment1);
         // hashCode
         assertEquals(comment1.hashCode(), comment2.hashCode());
         assertNotEquals(comment1.hashCode(), comment3.hashCode());
- 
+
     }
 } 

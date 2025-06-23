@@ -14,12 +14,17 @@ import static org.mockito.Mockito.when;
 import com.audition.common.logging.AuditionLogger;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
-import org.springframework.http.ProblemDetail;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ProblemDetail;
+
+/*
+ * Test class to cover the AuditionLogger success and failure scenarios.
+ * Most of the scenarios covered with all the required methods.
+ */
 
 @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
 class AuditionLoggerTest {
- 
+
     @Test
     void testAllLoggerMethods() {
         final AuditionLogger logger = new AuditionLogger();
@@ -44,7 +49,6 @@ class AuditionLoggerTest {
         logger.logHttpStatusCodeError(mockLogger, "msg", 400);
 
         verify(mockLogger, atLeastOnce()).info(anyString());
-        //verify(mockLogger, atLeastOnce()).info(anyString(), any());
         verify(mockLogger, atLeastOnce()).debug(anyString());
         verify(mockLogger, atLeastOnce()).warn(anyString());
         verify(mockLogger, atLeastOnce()).error(anyString());
@@ -71,7 +75,6 @@ class AuditionLoggerTest {
         logger.logHttpStatusCodeError(mockLogger, null, null);
 
         verify(mockLogger, never()).info(anyString());
-        //verify(mockLogger, never()).info(anyString(), any());
         verify(mockLogger, never()).debug(anyString());
         verify(mockLogger, never()).warn(anyString());
         verify(mockLogger, never()).error(anyString());
